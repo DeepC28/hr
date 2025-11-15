@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",                    // << ต้องมีเมื่อใช้ "paths"
+    "paths": {
+      "@/*": ["src/*"]                // map "@/..." -> "<root>/src/..."
+    },
+
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "target": "es6",
+    "plugins": [{ "name": "next" }]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "types/**/*.d.ts",
+    "src/app/api/drug/route.js",
+    "src/app/api/auth/[...nextauth]/route.js"
+  ],
+  "exclude": ["node_modules"]
+}
