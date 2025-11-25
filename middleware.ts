@@ -1,42 +1,51 @@
-// middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export function middleware(req: NextRequest) {
-  const origin = req.headers.get('origin') || '';
-  const isProjectB = origin === 'https://example-project-b.com';
-  const isPreflight = req.method === 'OPTIONS';
+const PUBLIC_PATHS = ["/auth/signin", "/auth/signup", "/"];
 
-  // ปิดแคชทุกคำขอบนเส้นทาง /uploads/* กันรูปค้าง
-  const headers = new Headers({
-    'Cache-Control': 'no-store',
-  });
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  if (isProjectB) {
-    headers.set('Access-Control-Allow-Origin', origin);
-    headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    headers.set(
-      'Access-Control-Allow-Headers',
-      req.headers.get('access-control-request-headers') || 'Content-Type'
-    );
-
-    if (isPreflight) {
-      // ตอบ preflight ที่นี่เลย
-      return new NextResponse(null, { status: 204, headers });
-    }
-
-    const res = NextResponse.next();
-    headers.forEach((v, k) => res.headers.set(k, v));
-    return res;
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/api/auth")
+  ) {
+    return NextResponse.next();
   }
 
-  // กรณี same-origin หรือไม่มี Origin → อนุญาต และใส่ no-store เท่านั้น (ไม่บล็อก)
-  const res = NextResponse.next();
-  headers.forEach((v, k) => res.headers.set(k, v));
-  return res;
+  if (PUBLIC_PATHS.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+  });
+
+  if (!token) {
+    const loginUrl = new URL("/auth/signin", req.url);
+    loginUrl.searchParams.set("callbackUrl", req.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // ถ้า path เริ่มด้วย /manage → ต้องเป็น admin เท่านั้น
+  if (pathname.startsWith("/manage")) {
+    // @ts-ignore
+    const role = token.role ?? "user";
+    if (role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  // ครอบคลุมทุกไฟล์อัปโหลด รวมถึง /uploads/users/**
-  matcher: ['/uploads/:path*'],
+  matcher: [
+    "/manage/:path*",
+    "/dashboard/:path*",
+    "/api/private/:path*",
+  ],
 };
