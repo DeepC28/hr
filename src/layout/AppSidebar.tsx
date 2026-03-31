@@ -148,8 +148,8 @@ const systemItems: NavItem[] = [
     icon: BoxCubeIcon,
     name: "การกำหนดสิทธิ์",
     subItems: [
-      { name: "บทบาท (Roles)", path: "/manage/roles" },
-      { name: "สิทธิ์ (Permissions)", path: "/manage/permissions" },
+      // { name: "บทบาท (Roles)", path: "/manage/roles" },
+      // { name: "สิทธิ์ (Permissions)", path: "/manage/permissions" },
       { name: "มอบบทบาทให้ผู้ใช้", path: "/manage/user-roles" },
     ],
   },

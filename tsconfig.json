@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",                    // << ต้องมีเมื่อใช้ "paths"
-    "paths": {
-      "@/*": ["src/*"]                // map "@/..." -> "<root>/src/..."
-    },
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] },
 
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -18,7 +16,9 @@
     "jsx": "preserve",
     "incremental": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["./types", "./node_modules/@types"],
+
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -30,7 +30,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "types/**/*.d.ts",
+    "src/types/**/*.d.ts",
     "src/app/api/drug/route.js",
     "src/app/api/auth/[...nextauth]/route.ts"
   ],

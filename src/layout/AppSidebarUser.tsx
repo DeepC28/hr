@@ -85,7 +85,7 @@ const mainItems: NavItem[] = [
   {
     icon: UserCircleIcon,
     name: "ข้อมูลผู้ใช้",
-    path: "/manage/profile",
+    path: "/profile",
   },
 ];
 
